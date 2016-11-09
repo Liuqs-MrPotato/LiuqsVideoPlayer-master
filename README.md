@@ -1,13 +1,12 @@
 创建方法：
-    self.player = [[LiuqsVideoPlayer alloc]init];
+- (void)playNormalVideo {
+
+    PlayerViewController *playerVC = [[PlayerViewController alloc]init];
+    [self presentViewController:playerVC animated:YES completion:nil];
+}
+
+- (void)playLecture {
     
-    [self.view addSubview:_player];
-    
-    _player.videoURL = [NSURL URLWithString:@"http://test.oss.geneqiao.com/20160803/0757045288b7494988a943dcf23e4ea5.mp4"];
-    
-    //设置frame
-- (void)viewWillLayoutSubviews {
-    
-    [super viewWillLayoutSubviews];
-    self.player.frame = CGRectMake(0, playerFrameY, screenW, screenW * 9 / 16);
+    VideoViewController *videoVC = [[VideoViewController alloc]init];
+    [self presentViewController:videoVC animated:YES completion:nil];
 }

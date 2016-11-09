@@ -1,0 +1,32 @@
+//
+//  LiuqsPlayerHeader.pch
+//  LiuqsVideoPlayerDemo
+//
+//  Created by 刘全水 on 2016/11/9.
+//  Copyright © 2016年 刘全水. All rights reserved.
+//
+
+#ifndef LiuqsPlayerHeader_pch
+#define LiuqsPlayerHeader_pch
+
+#import "UIView+Extension.h"
+
+#define SCREEN_WIDTH  [UIScreen mainScreen].bounds.size.width
+
+#define SCREEN_HEIGHT  [UIScreen mainScreen].bounds.size.height
+
+#define UserDefaults [NSUserDefaults standardUserDefaults]
+
+#define ColorRGB(r, g, b)        [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f alpha:1.0f]
+
+#define NavigationBar_COLOR      ColorRGB(43, 174, 253)
+
+#define LiuqsPlayerImageName(image) [NSString stringWithFormat:@"LiuqsPlayer_images.bundle/%@",image]
+
+#define colorOne   [UIColor colorWithRed:255.0 / 255.0 green:198.0 / 255.0 blue:0.0 / 255.0 alpha:1.0]
+
+#define colorTwo   [UIColor colorWithRed:20.0 / 255.0 green:200.0 / 255.0 blue:120.0 / 255.0 alpha:1.0]
+
+#define colorThree [UIColor colorWithRed:2.0 / 255 green:217.0 / 255.0 blue:236.0 / 255.0 alpha:1.0]
+
+#endif /* LiuqsPlayerHeader_pch */

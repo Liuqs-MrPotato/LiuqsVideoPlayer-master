@@ -1,0 +1,163 @@
+//
+//  LiuqsVideoController.m
+//  LiuqsVideoPlayerDemo
+//
+//  Created by 刘全水 on 16/9/12.
+//  Copyright © 2016年 刘全水. All rights reserved.
+//
+
+#import "PlayerViewController.h"
+#import "LiuqsVideoPlayer.h"
+
+@interface PlayerViewController ()
+
+@property(nonatomic, strong)LiuqsVideoPlayer *player;
+
+@property(nonatomic, assign)BOOL statusShoudHiden;
+
+@property(nonatomic, strong)UIButton *playerBackBtn;
+
+@end
+
+@implementation PlayerViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor blackColor];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    
+    return UIStatusBarStyleLightContent;
+}
+
+- (void)addPlayerView {
+    
+    if (!self.player) {
+        self.player = [[LiuqsVideoPlayer alloc]init];
+        self.player.isAutoPlay = YES;
+        self.player.isLocalTask = self.isLocalTask;
+        [self.view addSubview:_player];
+        NSString *encodingString = [@"http://test.oss.geneqiao.com/20161108/c4e96eb17fa945bd9a4db77fbba7776b.mp4" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        self.player.videoURL = [NSURL URLWithString:encodingString];
+        self.player.videoName = self.fileName;
+        if ([self.movieLength floatValue]) {
+            self.player.VideoSize = [NSString stringWithFormat:@"%0.2fM",[self.movieLength floatValue]];
+        }
+        [self playerBlockEvents];
+        [self addBackBtn];
+    }
+}
+
+- (void)addBackBtn {
+    
+    if (!self.playerBackBtn) {
+        UIButton *backBtn = [[UIButton alloc]init];
+        self.playerBackBtn = backBtn;
+        [backBtn setImage:[UIImage imageNamed:@"nav_left_nor"] forState:UIControlStateNormal];
+        [backBtn addTarget:self action:@selector(PlayerBackBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    }
+    [self.view addSubview:self.playerBackBtn];
+}
+
+- (void)PlayerBackBtnClick {
+    
+    [self.player resetPlayer];
+    [self.player removeFromSuperview];
+    self.player = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)playerBlockEvents {
+    
+    __weak PlayerViewController *blockSelf = self;
+    self.player.PayerControlAnimationHide = ^{
+        blockSelf.statusShoudHiden = YES;
+        [blockSelf setNeedsStatusBarAppearanceUpdate];
+    };
+    [self.player setPayerControlAnimationShow:^{
+        blockSelf.statusShoudHiden = NO;
+        [blockSelf setNeedsStatusBarAppearanceUpdate];
+    }];
+    [self.player setLiuqsPlayerBackBlock:^{
+        if (blockSelf.player.isFullScreenMode) {
+            
+            [blockSelf dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
+    
+    [self.player setLiuqsPlayerFullScreenBlock:^{
+        blockSelf.player.playerControl.nameLabel.hidden = NO;
+        blockSelf.playerBackBtn.hidden = YES;
+        blockSelf.player.playerControl.waterMarkView.image = [UIImage imageNamed:@"Watermark_big"];
+    }];
+    
+    [self.player setLiuqsPlayerShrinkScreenBlock:^{
+        blockSelf.player.playerControl.nameLabel.hidden = YES;
+        blockSelf.playerBackBtn.hidden = NO;
+        blockSelf.player.playerControl.waterMarkView.image = [UIImage imageNamed:@"Watermark"];
+    }];
+}
+
+- (BOOL)prefersStatusBarHidden {
+    
+    return self.statusShoudHiden;
+}
+
+
+- (void)viewWillLayoutSubviews {
+    
+    [super viewWillLayoutSubviews];
+    self.player.frame = self.view.bounds;
+    self.playerBackBtn.frame = CGRectMake(0, 20, 76, 44);
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    [self addObseverNetWorkMode];
+//    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//    appDelegate.shouldAutorotate = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+
+//    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//    appDelegate.shouldAutorotate = NO;
+}
+
+- (void)addObseverNetWorkMode {
+    
+    if (self.isLocalTask) {
+        [self addPlayerView];
+    }else if ([[UserDefaults objectForKey:@"netWork"] isEqualToString:@"wifi"]) {
+        [self addPlayerView];
+    }else if ([[UserDefaults objectForKey:@"netWork"] isEqualToString:@"online"]) {
+        if ([self.movieLength floatValue] > 3.0 ) {
+            NSString *messageStr = @"您正在使用移动网络，继续播放将消耗流量";
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:messageStr preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            UIAlertAction *otherAction = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self addPlayerView];
+            }];
+            [alertController addAction:cancelAction];
+            [alertController addAction:otherAction];
+            [self presentViewController:alertController animated:YES completion:nil];
+        }else {
+            [self addPlayerView];
+        }
+    }else {
+    
+      [self addPlayerView];
+    }
+}
+
+- (void)dealloc {
+
+    NSLog(@"播放控制器被释放了");
+}
+
+
+@end

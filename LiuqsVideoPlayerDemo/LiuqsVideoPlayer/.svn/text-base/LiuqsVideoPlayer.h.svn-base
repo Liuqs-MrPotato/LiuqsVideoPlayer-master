@@ -1,0 +1,71 @@
+//
+//  LiuqsVideoPlayer.h
+//  LiuqsVideoPlayerDemo
+//
+//  Created by 刘全水 on 16/7/12.
+//  Copyright © 2016年 刘全水. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "LiuqsPlayControlView.h"
+
+@interface LiuqsVideoPlayer : UIView
+
+//视频链接
+@property(nonatomic, strong)NSURL *videoURL;
+
+@property(nonatomic, copy)void(^LiuqsPlayerBackBlock)(void);
+
+@property(nonatomic, copy)void(^LiuqsPlayerPasueBlock)(void);
+
+@property(nonatomic, copy)void(^LiuqsPlayerPlayBlock)(void);
+
+@property(nonatomic, copy)void(^LiuqsPlayerFullScreenBlock)(void);
+
+@property(nonatomic, copy)void(^LiuqsPlayerShrinkScreenBlock)(void);
+
+@property(nonatomic, copy)void(^LiuqsPlayerPlayEndBlock)(void);
+
+@property(nonatomic, copy)void (^PayerControlAnimationShow)();
+
+@property(nonatomic, copy)void (^PayerControlAnimationHide)();
+
+@property(nonatomic, copy)void (^requestVideoInfoBlock)();
+
+@property(nonatomic, assign)BOOL   isFullScreenMode;
+
+@property(nonatomic, assign)BOOL   isAutoPlay;
+
+@property(nonatomic, copy)NSString *videoName;
+
+@property(nonatomic, copy)NSString *VideoSize;
+
+//@property(nonatomic, assign)BOOL   isAllowPlay;
+
+@property(nonatomic, assign)BOOL   isLocalTask;
+
+@property(nonatomic, assign)BOOL   isLecturePlayer;
+
+@property(nonatomic, assign)BOOL   isPlayerVCView;
+
+@property(nonatomic, assign)BOOL   isAllowPlay;
+
+//控制视图
+@property(nonatomic, strong)LiuqsPlayControlView *playerControl;
+
+
+- (void)play;
+
+- (void)pasue;
+
+- (void)playerPlay;
+
+- (void)playerPause;
+
+- (void)resetPlayer;
+
+- (void)resetPlayerWithUrl:(NSURL *)VideoUrl;
+
+- (void)shrinkScreenBtnClick:(UIButton *)shrinkBtn;
+
+@end
